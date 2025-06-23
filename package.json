@@ -1,0 +1,61 @@
+{
+  "name": "@directive/types",
+  "version": "1.0.0",
+  "description": "Types partagés pour l'écosystème Directive - Source unique de vérité",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./core": {
+      "import": "./dist/core/index.js",
+      "types": "./dist/core/index.d.ts"
+    },
+    "./sdk": {
+      "import": "./dist/sdk/index.js",
+      "types": "./dist/sdk/index.d.ts"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "directive",
+    "types",
+    "agents",
+    "ai",
+    "xstate",
+    "typescript"
+  ],
+  "author": "Directive Team",
+  "license": "MIT",
+  "peerDependencies": {
+    "xstate": "^5.20.0"
+  },
+  "peerDependenciesMeta": {
+    "xstate": {
+      "optional": false
+    }
+  },
+  "devDependencies": {
+    "typescript": "~5.8.0",
+    "xstate": "^5.20.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "prepare": "npm run build",
+    "type-check": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/directive-ai/directive.git",
+    "directory": "types"
+  }
+} 
