@@ -308,4 +308,293 @@ export interface SessionEventResponse {
   
   /** Actions effectuées */
   actions_performed?: string[];
+}
+
+// ============================================================================
+// CONFIGURATION GLOBALE CLI (Phase 3.1 - Migration CLI)
+// ============================================================================
+
+/**
+ * Configuration globale Directive (CLI + serveur)
+ */
+export interface GlobalConfig {
+  /** Version de l'infrastructure */
+  version: string;
+  
+  /** Préférences par défaut */
+  preferences: {
+    /** Auteur par défaut pour nouveaux projets */
+    defaultAuthor: string;
+    /** Type de base de données (géré côté serveur) */
+    defaultDatabase: string;
+  };
+  
+  /** Configuration serveur */
+  server: {
+    /** URL du serveur Directive */
+    url: string;
+    /** Environnement (local/production) */
+    environment: 'local' | 'production';
+  };
+  
+  /** Informations CLI */
+  cli: {
+    /** Version de la CLI */
+    version: string;
+    /** Dernière mise à jour */
+    lastUpdate: string;
+  };
+}
+
+/**
+ * Requête d'initialisation globale
+ */
+export interface InitRequest {
+  /** Auteur par défaut */
+  defaultAuthor?: string;
+  /** URL du serveur (si différente) */
+  serverUrl?: string;
+  /** Forcer la réinitialisation */
+  force?: boolean;
+}
+
+/**
+ * Réponse d'initialisation globale
+ */
+export interface InitResponse {
+  /** Succès de l'initialisation */
+  success: boolean;
+  /** Configuration créée */
+  config: GlobalConfig;
+  /** Message d'information */
+  message: string;
+  /** Répertoire créé */
+  directoryCreated: string;
+}
+
+// ============================================================================
+// AUTHENTIFICATION CLI (Phase 3.1 - Migration CLI)
+// ============================================================================
+
+/**
+ * Informations d'authentification utilisateur
+ */
+export interface UserInfo {
+  /** ID utilisateur */
+  id: string;
+  /** Email */
+  email: string;
+  /** Nom complet */
+  name?: string;
+  /** Rôle dans le système */
+  role: 'admin' | 'dev' | 'user';
+  /** Permissions */
+  permissions: string[];
+  /** Date de création */
+  createdAt: string;
+}
+
+/**
+ * Informations du serveur Directive
+ */
+export interface ServerInfo {
+  /** Nom du serveur */
+  name: string;
+  /** Version du Core */
+  version: string;
+  /** Environnement */
+  environment: 'local' | 'production';
+  /** URL de base */
+  baseUrl: string;
+  /** Statut */
+  status: 'healthy' | 'degraded' | 'down';
+  /** Features disponibles */
+  features: {
+    authentication: boolean;
+    deployments: boolean;
+    templating: boolean;
+    versioning: boolean;
+  };
+}
+
+// ============================================================================
+// TEMPLATES ET GÉNÉRATION (Phase 3.1 - Migration CLI)
+// ============================================================================
+
+/**
+ * Structure d'un projet Directive
+ */
+export interface ProjectStructure {
+  /** Nom du projet */
+  name: string;
+  /** Chemin de base */
+  basePath: string;
+  /** Fichiers à générer */
+  files: ProjectFile[];
+  /** Dépendances npm */
+  dependencies: Record<string, string>;
+  /** Dépendances de développement */
+  devDependencies: Record<string, string>;
+  /** Scripts npm */
+  scripts: Record<string, string>;
+}
+
+/**
+ * Fichier dans un projet
+ */
+export interface ProjectFile {
+  /** Chemin relatif */
+  path: string;
+  /** Contenu du fichier */
+  content: string;
+  /** Type de fichier */
+  type: 'typescript' | 'json' | 'markdown' | 'config' | 'template';
+  /** Exécutable (pour scripts) */
+  executable?: boolean;
+}
+
+/**
+ * Requête de template d'agent
+ */
+export interface AgentTemplateRequest {
+  /** Type d'agent */
+  type: 'conversational' | 'workflow' | 'data-processor' | 'custom';
+  /** Nom de l'agent */
+  name: string;
+  /** Description */
+  description: string;
+  /** Auteur */
+  author: string;
+  /** Version */
+  version?: string;
+}
+
+/**
+ * Réponse de template d'agent
+ */
+export interface AgentTemplateResponse {
+  /** Fichier agent.ts */
+  agentTs: string;
+  /** Fichier agent.json */
+  agentJson: string;
+  /** Fichier desc.mdx */
+  descMdx: string;
+  /** Variables utilisées */
+  variables: Record<string, string>;
+}
+
+// ============================================================================
+// VERSIONING ET STOCKAGE (Phase 3.1 - Migration CLI)
+// ============================================================================
+
+/**
+ * Version d'un agent déployé
+ */
+export interface AgentVersion {
+  /** ID unique de la version */
+  id: string;
+  /** ID de l'agent */
+  agentId: string;
+  /** Numéro de version */
+  version: string;
+  /** Taille du bundle en bytes */
+  bundleSize: number;
+  /** Date de déploiement */
+  deployedAt: string;
+  /** Statut de la version */
+  status: 'active' | 'inactive' | 'rollback';
+  /** Métadonnées de build */
+  metadata: {
+    /** Hash du build */
+    buildHash: string;
+    /** Temps de build */
+    buildTime: string;
+    /** Dépendances utilisées */
+    dependencies: Record<string, string>;
+    /** Commit Git associé */
+    gitCommit?: string;
+  };
+  /** URL d'accès (si déployée) */
+  url?: string;
+}
+
+/**
+ * Requête d'upload de bundle
+ */
+export interface UploadBundleRequest {
+  /** ID de l'agent */
+  agentId: string;
+  /** Version à déployer */
+  version: string;
+  /** Forcer le déploiement */
+  force?: boolean;
+  /** Métadonnées de build */
+  metadata: {
+    buildHash: string;
+    buildTime: string;
+    dependencies: Record<string, string>;
+    gitCommit?: string;
+  };
+}
+
+/**
+ * Réponse d'upload de bundle
+ */
+export interface UploadBundleResponse {
+  /** Succès de l'upload */
+  success: boolean;
+  /** ID du déploiement */
+  deploymentId: string;
+  /** Version déployée */
+  version: string;
+  /** URL d'accès */
+  url?: string;
+  /** Version précédente (pour rollback) */
+  rollbackVersion?: string;
+  /** Taille du bundle uploadé */
+  bundleSize: number;
+  /** Message */
+  message: string;
+}
+
+// ============================================================================
+// RESPONSES GÉNÉRIQUES API (Phase 3.1 - Migration CLI)
+// ============================================================================
+
+/**
+ * Réponse API générique
+ */
+export interface ApiResponse<T = any> {
+  /** Succès de l'opération */
+  success: boolean;
+  /** Données de réponse */
+  data?: T;
+  /** Message d'information */
+  message?: string;
+  /** Erreur éventuelle */
+  error?: string;
+  /** Code d'erreur */
+  errorCode?: string;
+  /** Timestamp de la réponse */
+  timestamp: string;
+}
+
+/**
+ * Réponse paginée
+ */
+export interface PaginatedResponse<T> {
+  /** Éléments de la page */
+  items: T[];
+  /** Numéro de page (0-indexé) */
+  page: number;
+  /** Taille de page */
+  pageSize: number;
+  /** Total d'éléments */
+  total: number;
+  /** Nombre total de pages */
+  totalPages: number;
+  /** Page suivante disponible */
+  hasNext: boolean;
+  /** Page précédente disponible */
+  hasPrevious: boolean;
 } 
